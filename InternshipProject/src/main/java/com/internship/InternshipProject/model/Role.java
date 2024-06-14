@@ -1,7 +1,5 @@
 package com.internship.InternshipProject.model;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -18,29 +16,20 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-
+@Table(name = "role")
+public class Role {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(name = "role_id")
     private String id;
-
-    @Column(unique = true)
-    private String username;
-
-    private String password;
-
+    @Column(name = "role_name")
+    private String name;
     @Version
     private Integer version;
 
-    @JsonManagedReference(value = "user-training")
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
-    private List<Training> trainings = new ArrayList<>();
-
-    @JsonBackReference(value = "user-role")
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "role")
-    private Role role;
-
+    @JsonManagedReference(value = "user-role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
+    private List<User> users = new ArrayList<>();
 
 }

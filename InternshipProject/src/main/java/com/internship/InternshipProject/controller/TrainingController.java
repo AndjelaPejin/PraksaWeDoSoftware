@@ -2,17 +2,20 @@ package com.internship.InternshipProject.controller;
 
 import com.internship.InternshipProject.DTO.TrainingDTO;
 import com.internship.InternshipProject.service.ITrainingService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/training")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
+@Secured("ROLE_USER")
 public class TrainingController {
 
     private final ITrainingService trainingService;

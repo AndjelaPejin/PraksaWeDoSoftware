@@ -1,7 +1,9 @@
 package com.internship.InternshipProject.controller;
 
 import com.internship.InternshipProject.DTO.UserDTO;
+import com.internship.InternshipProject.model.Role;
 import com.internship.InternshipProject.model.User;
+import com.internship.InternshipProject.repository.IRoleRepository;
 import com.internship.InternshipProject.repository.IUserRepository;
 import com.internship.InternshipProject.security.Encryption;
 import io.jsonwebtoken.Jwts;
@@ -21,7 +23,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
+    private final IRoleRepository roleRepository;
     private final IUserRepository userRepository;
 
     private final SecretKey secretKey;
@@ -31,13 +35,14 @@ public class UserController {
 
 
     private String getJWTToken(User userEntity) {
-        String token = Jwts.builder()
-                .setId("softtekJWT")
-                .setSubject(userEntity.getUsername())
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+                .commaSeparatedStringToAuthorityList(userEntity.getRole().getName());
+        String token = Jwts.builder().setId("softtekJWT").setSubject(userEntity.getUsername())
+                .claim("authorities", grantedAuthorities.stream()
+                        .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + this.tokenDuration))
-                .signWith(this.secretKey)
-                .compact();
+                .signWith(this.secretKey).compact();
         return "Bearer " + token;
     }
 
@@ -64,6 +69,9 @@ public class UserController {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(encodedPassword);
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        newUser.setRole(userRole);
+
         userRepository.save(newUser);
         return new ResponseEntity<>("User registered successfully", HttpStatus.CREATED);
     }

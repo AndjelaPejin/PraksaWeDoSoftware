@@ -33,7 +33,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable())
                 .addFilterAfter(new JWTAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().requestMatchers(HttpMethod.POST, "/login").permitAll().requestMatchers("/actuator/*").permitAll().anyRequest()
+                .authorizeRequests().requestMatchers(HttpMethod.POST, "/login","/register").permitAll().requestMatchers("/actuator/*").permitAll().anyRequest()
                 .authenticated();
         return http.build();
     }
