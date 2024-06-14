@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 import SignIn from './App';
 import { createBrowserRouter, NavLink, Outlet, RouterProvider } from "react-router-dom";
 import MenuAppBar from './Homepage';
+import SignUp from './Signup';
 
 
 const router = createBrowserRouter([
@@ -14,8 +13,11 @@ const router = createBrowserRouter([
     element: <SignIn/>
   },
   {
-    path: "/menu",
+    path: "/homepage",
     element: <MenuAppBar/>,
+  },
+  { path: "/signup",
+    element: <SignUp/>
   }
 ]);
 

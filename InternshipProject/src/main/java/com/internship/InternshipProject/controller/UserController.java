@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestParam("user") String username, @RequestParam("password") String pwd) {
+    public ResponseEntity<?> register(@RequestParam("user") String username, @RequestParam("password") String pwd, @RequestParam("email") String email) {
         if (userRepository.findByUsername(username) != null) {
             return new ResponseEntity<>("Username already taken", HttpStatus.BAD_REQUEST);
         }
@@ -69,6 +69,7 @@ public class UserController {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(encodedPassword);
+        newUser.setEmail(email);
         Role userRole = roleRepository.findByName("ROLE_USER");
         newUser.setRole(userRole);
 

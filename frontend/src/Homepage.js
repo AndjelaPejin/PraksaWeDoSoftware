@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, Typography, IconButton, Container, TextField, Grid, Card, CardContent, CardActions, Button, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Divider, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
 import { useNavigate } from 'react-router-dom';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
 import './homepage.css';
 
 export default function MenuAppBar() {
   const [auth, setAuth] = useState(true);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [trainings, setTrainings] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMenu, setSelectedMenu] = useState('overview');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,10 +37,6 @@ export default function MenuAppBar() {
     }
   };
 
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
-
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -73,31 +59,71 @@ export default function MenuAppBar() {
     setSearchQuery(event.target.value);
   };
 
-   const filteredTrainings = trainings.filter(training =>
+  const filteredTrainings = trainings.filter(training =>
     training.type.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
 
   const handlePrikazi = (id) => {
     navigate(`/pages/training/${id}`);
   };
 
+  const handleOverview = () => {
+    setSelectedMenu('overview');
+  };
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, display: 'none' }}>
         <Toolbar>
           <IconButton
-            size="large"
-            edge="start"
             color="inherit"
-            aria-label="menu"
+            aria-label="open drawer"
+            edge="start"
+            onClick={() => setDrawerOpen(!drawerOpen)}
             sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {}
-          </Typography>
+          <Typography variant="h6" noWrap component="div"></Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: 240,
+            boxSizing: 'border-box',
+            backgroundColor: '#000', // Set the background color to black
+            color: '#fff', // Set the text color to white
+          },
+        }}
+        variant="permanent"
+        anchor="left"
+      >
+        <Toolbar />
+        <Divider />
+        <List>
+          <ListItem button onClick={handleOverview}>
+            <ListItemIcon>
+              <DashboardIcon style={{ color: '#fff' }} /> {/* Set the icon color to white */}
+            </ListItemIcon>
+            <ListItemText primary="Overview" />
+          </ListItem>
+          {/* Add more ListItem components for other menu items */}
+        </List>
+      </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, ml: 30 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <TextField
+            fullWidth
+            label="Search"
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearch}
+            sx={{ flex: 1, marginRight: 2 }}
+          />
           {auth && (
             <div>
               <IconButton
@@ -107,8 +133,9 @@ export default function MenuAppBar() {
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
+                sx={{ fontSize: 40 }} // Increase the size of the profile icon
               >
-                <AccountCircle />
+                <AccountCircle fontSize="inherit" />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -130,36 +157,32 @@ export default function MenuAppBar() {
               </Menu>
             </div>
           )}
-        </Toolbar>
-      </AppBar>
-      <Container sx={{ mt: 2 }}>
-        <TextField
-          fullWidth
-          label="Search"
-          variant="outlined"
-          value={searchQuery}
-          onChange={handleSearch}
-          sx={{ mb: 2 }}
-        />
-        <Grid container spacing={2}>
-          {filteredTrainings.map((training) => (
-            <Grid item xs={12} sm={6} md={4} key={training.id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    {training.type}
-                  </Typography> 
-                </CardContent>
-                <CardActions>
-                  <Button onClick={() => handlePrikazi(training.id)} size="small">Prikaži</Button>
-                  <Button> Izmeni</Button> 
-                  <Button>Obriši</Button>
-                </CardActions>
-              </Card>
+        </Box>
+        <Container sx={{ mt: 2 }}>
+          {selectedMenu === 'overview' && (
+            <Grid container spacing={2}>
+              {filteredTrainings.map((training) => (
+                <Grid item xs={12} sm={6} md={4} key={training.id}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h5" component="div">
+                        {training.type}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button onClick={() => handlePrikazi(training.id)} size="small">Prikaži</Button>
+                      <Button>Izmeni</Button>
+                      <Button>Obriši</Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-      </Container>
+          )}
+        </Container>
+      </Box>
     </Box>
   );
 }
+
+
