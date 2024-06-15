@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Container, TextField, Grid, Card, CardContent, CardActions, Button, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Divider, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import AddIcon from '@mui/icons-material/Add';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
+import TrainingForm from './TrainingForm'; 
+import TrainingDetails from './TrainingDetails';
 import './homepage.css';
 
 export default function MenuAppBar() {
@@ -13,6 +16,9 @@ export default function MenuAppBar() {
   const [selectedMenu, setSelectedMenu] = useState('overview');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedTraining, setSelectedTraining] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,11 +69,41 @@ export default function MenuAppBar() {
     training.type.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handlePrikazi = (id) => {
-    navigate(`/pages/training/${id}`);
+  const handlePrikazi = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8090/training/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setSelectedTraining(data);
+      setModalOpen(true); 
+    } catch (error) {
+      console.error('Error fetching training details:', error);
+    }
   };
 
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedTraining(null);
+  };
+  
+
   const handleOverview = () => {
+    setSelectedMenu('overview');
+  };
+
+  const handleAddNewTraining = () => {
+    setSelectedMenu('addNewTraining');
+  };
+
+  const handleTrainingAdded = (newTraining) => {
+    setTrainings([...trainings, newTraining]);
     setSelectedMenu('overview');
   };
 
@@ -95,8 +131,8 @@ export default function MenuAppBar() {
           '& .MuiDrawer-paper': {
             width: 240,
             boxSizing: 'border-box',
-            backgroundColor: '#000', // Set the background color to black
-            color: '#fff', // Set the text color to white
+            backgroundColor: '#000', 
+            color: '#fff', 
           },
         }}
         variant="permanent"
@@ -107,23 +143,33 @@ export default function MenuAppBar() {
         <List>
           <ListItem button onClick={handleOverview}>
             <ListItemIcon>
-              <DashboardIcon style={{ color: '#fff' }} /> {/* Set the icon color to white */}
+              <DashboardIcon style={{ color: '#fff' }} /> {}
             </ListItemIcon>
             <ListItemText primary="Overview" />
+          </ListItem>
+          <ListItem button onClick={handleAddNewTraining}>
+            <ListItemIcon>
+              <AddIcon style={{ color: '#fff' }} /> {}
+            </ListItemIcon>
+            <ListItemText primary="Add New Training" />
           </ListItem>
           {/* Add more ListItem components for other menu items */}
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, ml: 30 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <TextField
-            fullWidth
-            label="Search"
-            variant="outlined"
-            value={searchQuery}
-            onChange={handleSearch}
-            sx={{ flex: 1, marginRight: 2 }}
-          />
+          {selectedMenu !== 'addNewTraining' ? (
+            <TextField
+              fullWidth
+              label="Search"
+              variant="outlined"
+              value={searchQuery}
+              onChange={handleSearch}
+              sx={{ flex: 1, marginRight: 2 }}
+            />
+          ) : (
+            <Box sx={{ flex: 1, marginRight: 2 }} /> 
+          )}
           {auth && (
             <div>
               <IconButton
@@ -133,7 +179,7 @@ export default function MenuAppBar() {
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
-                sx={{ fontSize: 40 }} // Increase the size of the profile icon
+                sx={{ fontSize: 40 }} 
               >
                 <AccountCircle fontSize="inherit" />
               </IconButton>
@@ -179,10 +225,18 @@ export default function MenuAppBar() {
               ))}
             </Grid>
           )}
+          {selectedMenu === 'addNewTraining' && (
+            <TrainingForm onTrainingAdded={handleTrainingAdded} />
+          )}
         </Container>
+        {selectedTraining && (
+          <TrainingDetails
+            trainingDetails={selectedTraining}
+            open={modalOpen}
+            onClose={handleCloseModal}
+          />
+        )}
       </Box>
     </Box>
   );
 }
-
-

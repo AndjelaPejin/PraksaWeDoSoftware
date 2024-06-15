@@ -34,7 +34,6 @@ public class Training {
     private Integer intensity;
     private Integer tiredness;
     private String notes;
-    @CreationTimestamp
     private Date createdDate;
 
 

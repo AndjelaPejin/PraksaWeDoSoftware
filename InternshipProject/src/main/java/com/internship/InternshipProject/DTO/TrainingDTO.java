@@ -9,6 +9,8 @@ import java.util.Date;
 
 @Data
 public class TrainingDTO {
+
+    private String id;
     @Enumerated
     private Type type;
 
@@ -17,6 +19,5 @@ public class TrainingDTO {
     private Integer intensity;
     private Integer tiredness;
     private String notes;
-    @CreationTimestamp
     private Date createdDate;
 }
