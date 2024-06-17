@@ -4,11 +4,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AddIcon from '@mui/icons-material/Add';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday'; // Import the icon for the new menu item
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'; 
 import { useNavigate } from 'react-router-dom';
 import TrainingForm from './TrainingForm'; 
 import TrainingDetails from './TrainingDetails';
-import MonthlySummary from './MonthlySummary'; // Import the new component
+import MonthlySummary from './MonthlySummary'; 
 import './homepage.css';
 
 export default function MenuAppBar() {
@@ -165,7 +165,7 @@ export default function MenuAppBar() {
             </ListItemIcon>
             <ListItemText primary="Monthly Summary" />
           </ListItem>
-          {/* Add more ListItem components for other menu items */}
+          {}
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, ml: 30 }}>

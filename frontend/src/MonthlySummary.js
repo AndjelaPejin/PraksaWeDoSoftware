@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
 import MonthlySummaryForm from './MonthlySummaryForm';
 
 export default function MonthlySummary() {
@@ -20,27 +20,30 @@ export default function MonthlySummary() {
       setSummary(data);
     } catch (error) {
       console.error('Error fetching summary:', error);
+      alert('No trainings found for the specified year and month.');
     }
   };
 
   return (
-    <Box>
+    <Box sx={{ mt: 4 }}>
       <MonthlySummaryForm onMonthSelected={handleMonthSelected} />
-      <List>
-        {summary.map((weekSummary) => (
-          <React.Fragment key={weekSummary.week}>
-            <ListItem>
-              <ListItemText
-                primary={`Week: ${weekSummary.week}`}
-                secondary={`Total Duration: ${weekSummary.totalDuration} mins, Total Count: ${weekSummary.totalCount}, Avg Intensity: ${weekSummary.avgIntensity.toFixed(2)}, Avg Tiredness: ${weekSummary.avgTiredness.toFixed(2)}`}
-              />
-            </ListItem>
-            <Divider />
-          </React.Fragment>
-        ))}
-      </List>
+      {summary.length > 0 && (
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+          {summary.map((weekSummary) => (
+            <Grid item xs={12} sm={6} md={4} key={weekSummary.week}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">Week: {weekSummary.week}</Typography>
+                  <Typography>Total Duration: {weekSummary.totalDuration} mins</Typography>
+                  <Typography>Number of trainings: {weekSummary.totalCount}</Typography>
+                  <Typography>Avg Intensity: {weekSummary.avgIntensity.toFixed(2)}</Typography>
+                  <Typography>Avg Tiredness: {weekSummary.avgTiredness.toFixed(2)}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Box>
   );
 }
-
-

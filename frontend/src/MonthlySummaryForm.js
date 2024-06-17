@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button } from '@mui/material';
+import { Box, TextField, Button, Typography } from '@mui/material';
 
 export default function MonthlySummaryForm({ onMonthSelected }) {
   const [year, setYear] = useState('');
@@ -25,6 +25,7 @@ export default function MonthlySummaryForm({ onMonthSelected }) {
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+      <Typography variant="h6" gutterBottom>Enter Year and Month</Typography>
       <TextField
         fullWidth
         margin="normal"
