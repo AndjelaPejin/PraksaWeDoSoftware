@@ -37,6 +37,7 @@ public class Training {
     private Date createdDate;
 
 
+
     @JsonBackReference(value = "user-training")
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

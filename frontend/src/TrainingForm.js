@@ -13,13 +13,45 @@ export default function TrainingForm({ onTrainingAdded }) {
     time: '',
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewTraining({ ...newTraining, [name]: value });
   };
 
+  const validate = () => {
+    let tempErrors = {};
+
+    if (!Number.isInteger(parseInt(newTraining.duration)) || parseInt(newTraining.duration) <= 0) {
+      tempErrors.duration = 'Duration must be a positive number';
+    }
+
+    if (!Number.isInteger(parseInt(newTraining.caloriesBurned)) || parseInt(newTraining.caloriesBurned) <= 0) {
+      tempErrors.caloriesBurned = 'Calories Burned must be a positive number';
+    }
+
+    const intensityValue = parseInt(newTraining.intensity);
+    if (!Number.isInteger(intensityValue) || intensityValue < 1 || intensityValue > 10) {
+      tempErrors.intensity = 'Intensity must be a number between 1 and 10';
+    }
+
+    const tirednessValue = parseInt(newTraining.tiredness);
+    if (!Number.isInteger(tirednessValue) || tirednessValue < 1 || tirednessValue > 10) {
+      tempErrors.tiredness = 'Tiredness must be a number between 1 and 10';
+    }
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
+
+    const { date, time, ...rest } = newTraining;
+    const combinedDateTime = new Date(`${date}T${time}`);
+
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:8090/training', {
@@ -28,7 +60,7 @@ export default function TrainingForm({ onTrainingAdded }) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(newTraining),
+        body: JSON.stringify({ ...rest, createdDate: combinedDateTime }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -65,6 +97,8 @@ export default function TrainingForm({ onTrainingAdded }) {
         label="Duration"
         value={newTraining.duration}
         onChange={handleInputChange}
+        error={!!errors.duration}
+        helperText={errors.duration}
       />
       <TextField
         fullWidth
@@ -74,6 +108,8 @@ export default function TrainingForm({ onTrainingAdded }) {
         label="Calories Burned"
         value={newTraining.caloriesBurned}
         onChange={handleInputChange}
+        error={!!errors.caloriesBurned}
+        helperText={errors.caloriesBurned}
       />
       <TextField
         fullWidth
@@ -83,6 +119,8 @@ export default function TrainingForm({ onTrainingAdded }) {
         label="Intensity"
         value={newTraining.intensity}
         onChange={handleInputChange}
+        error={!!errors.intensity}
+        helperText={errors.intensity}
       />
       <TextField
         fullWidth
@@ -92,6 +130,8 @@ export default function TrainingForm({ onTrainingAdded }) {
         label="Tiredness"
         value={newTraining.tiredness}
         onChange={handleInputChange}
+        error={!!errors.tiredness}
+        helperText={errors.tiredness}
       />
       <TextField
         fullWidth

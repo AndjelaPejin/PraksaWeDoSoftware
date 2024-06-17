@@ -4,9 +4,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AddIcon from '@mui/icons-material/Add';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'; // Import the icon for the new menu item
 import { useNavigate } from 'react-router-dom';
 import TrainingForm from './TrainingForm'; 
 import TrainingDetails from './TrainingDetails';
+import MonthlySummary from './MonthlySummary'; // Import the new component
 import './homepage.css';
 
 export default function MenuAppBar() {
@@ -102,6 +104,10 @@ export default function MenuAppBar() {
     setSelectedMenu('addNewTraining');
   };
 
+  const handleMonthlySummary = () => {
+    setSelectedMenu('monthlySummary');
+  };
+
   const handleTrainingAdded = (newTraining) => {
     setTrainings([...trainings, newTraining]);
     setSelectedMenu('overview');
@@ -153,12 +159,18 @@ export default function MenuAppBar() {
             </ListItemIcon>
             <ListItemText primary="Add New Training" />
           </ListItem>
+          <ListItem button onClick={handleMonthlySummary}>
+            <ListItemIcon>
+              <CalendarTodayIcon style={{ color: '#fff' }} /> {}
+            </ListItemIcon>
+            <ListItemText primary="Monthly Summary" />
+          </ListItem>
           {/* Add more ListItem components for other menu items */}
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, ml: 30 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          {selectedMenu !== 'addNewTraining' ? (
+          {selectedMenu !== 'addNewTraining' && selectedMenu !== 'monthlySummary' ? (
             <TextField
               fullWidth
               label="Search"
@@ -227,6 +239,9 @@ export default function MenuAppBar() {
           )}
           {selectedMenu === 'addNewTraining' && (
             <TrainingForm onTrainingAdded={handleTrainingAdded} />
+          )}
+          {selectedMenu === 'monthlySummary' && (
+            <MonthlySummary />
           )}
         </Container>
         {selectedTraining && (
