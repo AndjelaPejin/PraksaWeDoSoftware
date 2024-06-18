@@ -63,16 +63,22 @@ public class TrainingServiceImpl implements ITrainingService{
         User currentUser = userService.getCurrentUser();
         String userId = currentUser.getId();
 
-        List<Training> trainings = trainingRepository.findByUserId(userId);
-        if (trainings.isEmpty()) {
+        // Preuzmanje treninga za zadati mesec i godinu
+        List<Training> allTrainingsForMonth = trainingRepository.findByYearAndMonth(year, month);
+
+        // Filtriranje treninga za trenutnog korisnika
+        List<Training> userTrainingsForMonth = allTrainingsForMonth.stream()
+                .filter(training -> userId.equals(training.getUser().getId()))
+                .collect(Collectors.toList());
+
+        if (userTrainingsForMonth.isEmpty()) {
             throw new NoTrainingsFoundException("No trainings found for the specified year and month.");
         }
 
-        Map<Integer, List<Training>> trainingsByWeek = trainings.stream().collect(Collectors.groupingBy(training -> {
+        // Grupisanje treninga po nedeljama
+        Map<Integer, List<Training>> trainingsByWeek = userTrainingsForMonth.stream().collect(Collectors.groupingBy(training -> {
             Calendar cal = Calendar.getInstance();
             cal.setTime(training.getCreatedDate());
-            cal.set(Calendar.YEAR, year);
-            cal.set(Calendar.MONTH, month - 1);
             return cal.get(Calendar.WEEK_OF_MONTH);
         }));
 
@@ -87,5 +93,6 @@ public class TrainingServiceImpl implements ITrainingService{
             return new WeeklyDTO(week, totalDuration, totalCount, avgIntensity, avgTiredness);
         }).collect(Collectors.toList());
     }
+
 
 }
