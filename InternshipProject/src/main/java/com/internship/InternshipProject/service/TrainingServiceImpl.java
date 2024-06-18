@@ -60,7 +60,10 @@ public class TrainingServiceImpl implements ITrainingService{
 
     @Override
     public List<WeeklyDTO> getMonthlySummary(int year, int month) {
-        List<Training> trainings = trainingRepository.findByYearAndMonth(year, month);
+        User currentUser = userService.getCurrentUser();
+        String userId = currentUser.getId();
+
+        List<Training> trainings = trainingRepository.findByUserId(userId);
         if (trainings.isEmpty()) {
             throw new NoTrainingsFoundException("No trainings found for the specified year and month.");
         }
