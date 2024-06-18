@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function TrainingForm({ onTrainingAdded }) {
   const [newTraining, setNewTraining] = useState({
@@ -67,6 +69,7 @@ export default function TrainingForm({ onTrainingAdded }) {
       }
       const data = await response.json();
       onTrainingAdded(data);
+      toast.info('Training successfully added!');
     } catch (error) {
       console.error('Error adding training:', error);
     }

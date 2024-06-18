@@ -3,7 +3,6 @@ package com.internship.InternshipProject.controller;
 import com.internship.InternshipProject.DTO.TrainingDTO;
 import com.internship.InternshipProject.DTO.WeeklyDTO;
 import com.internship.InternshipProject.service.ITrainingService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -42,7 +41,7 @@ public class TrainingController {
     }
 
     @GetMapping("/monthly-summary")
-    public ResponseEntity<List<WeeklyDTO>> getMonthlySummary(@RequestParam int year, @RequestParam int month) {
+    public ResponseEntity<List<WeeklyDTO>> getMonthlySummary(@RequestParam Integer year, @RequestParam Integer month) {
         List<WeeklyDTO> summary = trainingService.getMonthlySummary(year, month);
         return ResponseEntity.ok(summary);
     }

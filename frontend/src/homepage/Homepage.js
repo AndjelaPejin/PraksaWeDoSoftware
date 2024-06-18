@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Container, TextField, Grid, Card, CardContent, CardActions, Button, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Divider, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Container, TextField, Grid, Card, CardContent, CardActions, Box, Drawer, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Divider, Menu, MenuItem } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AddIcon from '@mui/icons-material/Add';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'; 
 import { useNavigate } from 'react-router-dom';
-import TrainingForm from './TrainingForm'; 
-import TrainingDetails from './TrainingDetails';
-import MonthlySummary from './MonthlySummary'; 
+import MonthlySummary from '../monthly-summary/MonthlySummary'; 
 import './homepage.css';
+import TrainingDetails from '../training/TrainingDetails';
+import TrainingForm from '../training/TrainingForm';
 
-export default function MenuAppBar() {
+export default function HomepageComponent() {
   const [auth, setAuth] = useState(true);
   const [trainings, setTrainings] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,7 +21,6 @@ export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedTraining, setSelectedTraining] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function MenuAppBar() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, display: 'none' }}>
+      
         <Toolbar>
           <IconButton
             color="inherit"
@@ -129,7 +129,7 @@ export default function MenuAppBar() {
           </IconButton>
           <Typography variant="h6" noWrap component="div"></Typography>
         </Toolbar>
-      </AppBar>
+      
       <Drawer
         sx={{
           width: 240,
@@ -168,7 +168,7 @@ export default function MenuAppBar() {
           {}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, ml: 30 }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, ml: 4 }}> {}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           {selectedMenu !== 'addNewTraining' && selectedMenu !== 'monthlySummary' ? (
             <TextField
@@ -177,7 +177,7 @@ export default function MenuAppBar() {
               variant="outlined"
               value={searchQuery}
               onChange={handleSearch}
-              sx={{ flex: 1, marginRight: 2 }}
+              sx={{ flex: 1, marginRight: 2, ml: 1 }} 
             />
           ) : (
             <Box sx={{ flex: 1, marginRight: 2 }} /> 
@@ -210,13 +210,13 @@ export default function MenuAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleProfile}>Profile</MenuItem>
+            
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </div>
           )}
         </Box>
-        <Container sx={{ mt: 2 }}>
+        <Container sx={{ mt: 2, ml: 0 }}> {}
           {selectedMenu === 'overview' && (
             <Grid container spacing={2}>
               {filteredTrainings.map((training) => (
@@ -228,9 +228,7 @@ export default function MenuAppBar() {
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button onClick={() => handlePrikazi(training.id)} size="small">Prikaži</Button>
-                      <Button>Izmeni</Button>
-                      <Button>Obriši</Button>
+                      <IconButton onClick={() => handlePrikazi(training.id)} size="small" >View Details<InfoIcon style={{ color: 'black' }}/></IconButton>
                     </CardActions>
                   </Card>
                 </Grid>
@@ -255,3 +253,4 @@ export default function MenuAppBar() {
     </Box>
   );
 }
+

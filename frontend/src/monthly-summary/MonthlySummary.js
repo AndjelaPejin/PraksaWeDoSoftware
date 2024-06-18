@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
 import MonthlySummaryForm from './MonthlySummaryForm';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function MonthlySummary() {
   const [summary, setSummary] = useState([]);
@@ -19,13 +21,13 @@ export default function MonthlySummary() {
       const data = await response.json();
       setSummary(data);
     } catch (error) {
-      console.error('Error fetching summary:', error);
-      alert('No trainings found for the specified year and month.');
+      toast.error("No trainings found for the specified year and month.");
     }
   };
 
   return (
     <Box sx={{ mt: 4 }}>
+      <ToastContainer />
       <MonthlySummaryForm onMonthSelected={handleMonthSelected} />
       {summary.length > 0 && (
         <Grid container spacing={2} sx={{ mt: 2 }}>

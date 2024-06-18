@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import SignIn from './App';
 import { createBrowserRouter, NavLink, Outlet, RouterProvider } from "react-router-dom";
-import MenuAppBar from './Homepage';
+import HomepageComponent from './homepage/Homepage';
 import SignUp from './Signup';
 
 
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/homepage",
-    element: <MenuAppBar/>,
+    element: <HomepageComponent/>,
   },
   { path: "/signup",
     element: <SignUp/>
