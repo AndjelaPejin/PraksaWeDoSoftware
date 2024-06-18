@@ -44,7 +44,9 @@ public class TrainingServiceImpl implements ITrainingService{
 
     @Override
     public List<TrainingDTO> getAll() {
-        List<Training> trainings = trainingRepository.findAll();
+        User currentUser = userService.getCurrentUser();
+        String id = currentUser.getId();
+        List<Training> trainings = trainingRepository.findByUserId(id);
         List<TrainingDTO> trainingDTOS = new ArrayList<>();
         trainings.forEach(e -> trainingDTOS.add(mapper.map(e, TrainingDTO.class)));
         return trainingDTOS;

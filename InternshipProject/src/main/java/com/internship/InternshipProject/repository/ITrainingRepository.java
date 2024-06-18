@@ -10,4 +10,5 @@ import java.util.List;
 public interface ITrainingRepository extends JpaRepository<Training,String> {
     @Query("SELECT t FROM Training t WHERE YEAR(t.createdDate) = :year AND MONTH(t.createdDate) = :month")
     List<Training> findByYearAndMonth(@Param("year") int year, @Param("month") int month);
+    List<Training>findByUserId(String id);
 }
